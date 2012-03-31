@@ -1,0 +1,3 @@
+desc=Dahdi HW Config
+os_support=*-linux
+category=hardware

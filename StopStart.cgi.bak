@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+
+# Webmin-Dahdi HW Config -StopStart.cgi
+# Starts and stops dahdi services
+# Author: Eugene Blanchard
+# Revision: 0.10
+# Date: Sept 11, 2010
+# Set of decisions that based on the cgi call will stop and start the dahdi kernel drivers and reload 
+# the dahdi config in asterisk then prints the output to the screen
+# Stop_Asterisk = 1: Stops Asterisk 
+# Start_Asterisk = 1: Starts Asterisk
+# Restart_Dahdi = 1: Restarts Dahdi kernel drivers
+# Reload_Dadhi = 1: Reloads Dahdi SW configuration files
+# Caller = the name of the cgi file calling 
+
+
+require 'dahdiHW-lib.pl';
+
+MAIN:
+{
+ReadParse();
+my $Stop_Asterisk = $in{'Stop_Asterisk'};
+my $Start_Asterisk = $in{'Start_Asterisk'};
+my $Restart_Dahdi = $in{'Restart_Dahdi'};
+my $Reload_Dadhi = $in{'Reload_Dadhi'};
+my $Caller = $in{'Caller'};
+
+ui_print_header(undef, $text{'index_title'}, "", undef, 1, 1);
+print ("<center><h3>", $text{'LoadingNewConfig'}, "</h3></center>");
+
+print ("Stop_Asterisk = ", $Stop_Asterisk, "<P>Start_Asterisk = ", $Start_Asterisk, "<P>Restart_Dahdi = ",$Restart_Dahdi, "<P>Reload_Dadhi = ",$Reload_Dadhi, "<P>");
+if ($Stop_Asterisk == 1)
+  {
+  stop_pbx();
+  }
+if ($Restart_Dahdi == 1)
+  {
+  restart_dahdi();
+  }
+if ($Start_Asterisk)
+  {
+  start_pbx();
+  }
+if ($Reload_Dadhi)
+  {
+  reload_dahdi();
+  }
+
+
+#Print returns to called link
+print (ui_nav_link(left, $Caller, 0), "<B><a href=\"", $Caller, "\">", $text{'Return'}, "</a></b><p>\n");
+#Print returns to main menu link
+print (ui_nav_link(left, "index.cgi", 0), "<B><a href=\"index.cgi\">", $text{'ReturnToDahdiHW'}, "</a></b><P>\n");
+ui_print_footer("/", $text{'index'});
+}
